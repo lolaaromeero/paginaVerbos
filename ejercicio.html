@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Verbos Irregulares</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .missing {
+            background-color: #fffbe6;
+        }
+        .button-container {
+            text-align: center;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 90%;
+            padding: 5px;
+        }
+        .correct {
+            background-color: #d4edda !important;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Verbos Irregulares JESUSIN :)</h1>
+    <div class="button-container">
+        <button onclick="generateExercise()">Generar Ejercicio</button>
+        <button onclick="checkAnswers()">Revisar Respuestas</button>
+    </div>
+    <table id="verbs-table">
+        <thead>
+            <tr>
+                <th>Infinitivo</th>
+                <th>Pasado Simple</th>
+                <th>Participio Pasado</th>
+                <th>Traducción</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="message" class="message"></div>
+
+    <script>
+        const verbs = [
+    { infinitive: "arise", past: "arose", participle: "arisen", translation: "surgir" },
+    { infinitive: "be", past: "was/were", participle: "been", translation: "ser/estar" },
+    { infinitive: "beat", past: "beat", participle: "beaten", translation: "golpear" },
+    { infinitive: "become", past: "became", participle: "become", translation: "convertirse" },
+    { infinitive: "begin", past: "began", participle: "begun", translation: "comenzar" },
+    { infinitive: "bend", past: "bent", participle: "bent", translation: "doblar" },
+    { infinitive: "bite", past: "bit", participle: "bitten", translation: "morder" },
+    { infinitive: "bleed", past: "bled", participle: "bled", translation: "sangrar" },
+    { infinitive: "blow", past: "blew", participle: "blown", translation: "soplar" },
+    { infinitive: "break", past: "broke", participle: "broken", translation: "romper" },
+    { infinitive: "bring", past: "brought", participle: "brought", translation: "traer" },
+    { infinitive: "broadcast", past: "broadcast", participle: "broadcast", translation: "emitir" },
+    { infinitive: "build", past: "built", participle: "built", translation: "construir" },
+    { infinitive: "burn", past: "burnt", participle: "burnt", translation: "quemar" },
+    { infinitive: "burst", past: "burst", participle: "burst", translation: "estallar" },
+    { infinitive: "buy", past: "bought", participle: "bought", translation: "comprar" },
+    { infinitive: "catch", past: "caught", participle: "caught", translation: "atrapar" },
+    { infinitive: "choose", past: "chose", participle: "chosen", translation: "elegir" },
+    { infinitive: "come", past: "came", participle: "come", translation: "venir" },
+    { infinitive: "cost", past: "cost", participle: "cost", translation: "costar" },
+    { infinitive: "creep", past: "crept", participle: "crept", translation: "arrastrarse" },
+    { infinitive: "cut", past: "cut", participle: "cut", translation: "cortar" },
+    { infinitive: "deal", past: "dealt", participle: "dealt", translation: "tratar" },
+    { infinitive: "dig", past: "dug", participle: "dug", translation: "cavar" },
+    { infinitive: "do", past: "did", participle: "done", translation: "hacer" },
+    { infinitive: "draw", past: "drew", participle: "drawn", translation: "dibujar" },
+    { infinitive: "dream", past: "dreamt", participle: "dreamt", translation: "soñar" },
+    { infinitive: "drink", past: "drank", participle: "drunk", translation: "beber" },
+    { infinitive: "drive", past: "drove", participle: "driven", translation: "conducir" },
+    { infinitive: "eat", past: "ate", participle: "eaten", translation: "comer" },
+    { infinitive: "fall", past: "fell", participle: "fallen", translation: "caer" },
+    { infinitive: "feed", past: "fed", participle: "fed", translation: "alimentar" },
+    { infinitive: "feel", past: "felt", participle: "felt", translation: "sentir" },
+    { infinitive: "fight", past: "fought", participle: "fought", translation: "luchar" },
+    { infinitive: "find", past: "found", participle: "found", translation: "encontrar" },
+    { infinitive: "fly", past: "flew", participle: "flown", translation: "volar" },
+    { infinitive: "forbid", past: "forbade", participle: "forbidden", translation: "prohibir" },
+    { infinitive: "forget", past: "forgot", participle: "forgotten", translation: "olvidar" },
+    { infinitive: "forgive", past: "forgave", participle: "forgiven", translation: "perdonar" },
+    { infinitive: "freeze", past: "froze", participle: "frozen", translation: "congelar" },
+    { infinitive: "get", past: "got", participle: "got", translation: "obtener" },
+    { infinitive: "give", past: "gave", participle: "given", translation: "dar" },
+    { infinitive: "go", past: "went", participle: "gone", translation: "ir" },
+    { infinitive: "grow", past: "grew", participle: "grown", translation: "crecer" },
+    { infinitive: "hang", past: "hung", participle: "hung", translation: "colgar" },
+    { infinitive: "have", past: "had", participle: "had", translation: "tener" },
+    { infinitive: "hear", past: "heard", participle: "heard", translation: "oír" },
+    { infinitive: "hide", past: "hid", participle: "hidden", translation: "esconder" },
+    { infinitive: "hit", past: "hit", participle: "hit", translation: "golpear" },
+    { infinitive: "hold", past: "held", participle: "held", translation: "sostener" },
+    { infinitive: "hurt", past: "hurt", participle: "hurt", translation: "herir" },
+    { infinitive: "keep", past: "kept", participle: "kept", translation: "mantener" },
+    { infinitive: "kneel", past: "knelt", participle: "knelt", translation: "arrodillarse" },
+    { infinitive: "know", past: "knew", participle: "known", translation: "saber" },
+    { infinitive: "lay", past: "laid", participle: "laid", translation: "colocar" },
+    { infinitive: "lead", past: "led", participle: "led", translation: "guiar" },
+    { infinitive: "learn", past: "learnt", participle: "learnt", translation: "aprender" },
+    { infinitive: "leave", past: "left", participle: "left", translation: "dejar" },
+    { infinitive: "lend", past: "lent", participle: "lent", translation: "prestar" },
+    { infinitive: "let", past: "let", participle: "let", translation: "permitir" },
+    { infinitive: "lie", past: "lay", participle: "lain", translation: "mentir" },
+    { infinitive: "light", past: "lit", participle: "lit", translation: "iluminar" },
+    { infinitive: "lose", past: "lost", participle: "lost", translation: "perder" },
+    { infinitive: "make", past: "made", participle: "made", translation: "hacer" },
+    { infinitive: "mean", past: "meant", participle: "meant", translation: "significar" },
+    { infinitive: "meet", past: "met", participle: "met", translation: "conocer" },
+    { infinitive: "pay", past: "paid", participle: "paid", translation: "pagar" },
+    { infinitive: "put", past: "put", participle: "put", translation: "poner" },
+    { infinitive: "read", past: "read", participle: "read", translation: "leer" },
+    { infinitive: "ride", past: "rode", participle: "ridden", translation: "montar" },
+    { infinitive: "ring", past: "rang", participle: "rung", translation: "sonar" },
+    { infinitive: "rise", past: "rose", participle: "risen", translation: "ascender" },
+    { infinitive: "run", past: "ran", participle: "run", translation: "correr" },
+    { infinitive: "say", past: "said", participle: "said", translation: "decir" },
+    { infinitive: "see", past: "saw", participle: "seen", translation: "ver" },
+    { infinitive: "sell", past: "sold", participle: "sold", translation: "vender" },
+    { infinitive: "send", past: "sent", participle: "sent", translation: "enviar" },
+    { infinitive: "set", past: "set", participle: "set", translation: "colocar" },
+    { infinitive: "sew", past: "sewed", participle: "sewn", translation: "coser" },
+    { infinitive: "shake", past: "shook", participle: "shaken", translation: "sacudir" },
+    { infinitive: "shine", past: "shone", participle: "shone", translation: "brillar" },
+    { infinitive: "shoot", past: "shot", participle: "shot", translation: "disparar" },
+    { infinitive: "show", past: "showed", participle: "shown", translation: "mostrar" },
+    { infinitive: "shut", past: "shut", participle: "shut", translation: "cerrar" },
+    { infinitive: "sing", past: "sang", participle: "sung", translation: "cantar" },
+    { infinitive: "sink", past: "sank", participle: "sunk", translation: "hundir" },
+    { infinitive: "sit", past: "sat", participle: "sat", translation: "sentarse" },
+    { infinitive: "sleep", past: "slept", participle: "slept", translation: "dormir" },
+    { infinitive: "slide", past: "slid", participle: "slid", translation: "deslizar" },
+    { infinitive: "smell", past: "smelt", participle: "smelt", translation: "oler" },
+    { infinitive: "sow", past: "sowed", participle: "sown", translation: "sembrar" },
+    { infinitive: "speak", past: "spoke", participle: "spoken", translation: "hablar" },
+    { infinitive: "spell", past: "spelt", participle: "spelt", translation: "deletrear" },
+    { infinitive: "spend", past: "spent", participle: "spent", translation: "gastar" },
+     { infinitive: "spill", past: "spilt", participle: "spilt", translation: "derramar" },
+    { infinitive: "spit", past: "spat", participle: "spat", translation: "escupir" },
+    { infinitive: "split", past: "split", participle: "split", translation: "dividir" },
+    { infinitive: "spoil", past: "spoilt", participle: "spoilt", translation: "estropear" },
+    { infinitive: "spread", past: "spread", participle: "spread", translation: "esparcir" },
+    { infinitive: "spring", past: "sprang", participle: "sprung", translation: "saltar" },
+    { infinitive: "stand", past: "stood", participle: "stood", translation: "estar de pie" },
+    { infinitive: "steal", past: "stole", participle: "stolen", translation: "robar" },
+    { infinitive: "stick", past: "stuck", participle: "stuck", translation: "pegar" },
+    { infinitive: "sting", past: "stung", participle: "stung", translation: "picar" },
+    { infinitive: "strike", past: "struck", participle: "struck", translation: "golpear" },
+    { infinitive: "swear", past: "swore", participle: "sworn", translation: "jurar" },
+    { infinitive: "sweep", past: "swept", participle: "swept", translation: "barrer" },
+    { infinitive: "swell", past: "swelled", participle: "swollen", translation: "hinchar" },
+    { infinitive: "swim", past: "swam", participle: "swum", translation: "nadar" },
+    { infinitive: "swing", past: "swung", participle: "swung", translation: "balancear" },
+    { infinitive: "take", past: "took", participle: "taken", translation: "tomar" },
+    { infinitive: "teach", past: "taught", participle: "taught", translation: "enseñar" },
+    { infinitive: "teach", past: "taught", participle: "taught", translation: "enseñar" },
+    { infinitive: "tear", past: "tore", participle: "torn", translation: "romper" },
+    { infinitive: "tell", past: "told", participle: "told", translation: "decir" },
+    { infinitive: "think", past: "thought", participle: "thought", translation: "pensar" },
+    { infinitive: "throw", past: "threw", participle: "thrown", translation: "lanzar" },
+    { infinitive: "understand", past: "understood", participle: "understood", translation: "entender" },
+    { infinitive: "wake", past: "woke", participle: "woken", translation: "despertar" },
+    { infinitive: "wear", past: "wore", participle: "worn", translation: "llevar puesto" },
+    { infinitive: "win", past: "won", participle: "won", translation: "ganar" },
+    { infinitive: "wind", past: "wound", participle: "wound", translation: "enrollar" },
+    { infinitive: "withdraw", past: "withdrew", participle: "withdrawn", translation: "retirar" },
+    { infinitive: "write", past: "wrote", participle: "written", translation: "escribir" },
+];
+
+
+        // Función para desordenar una lista
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function generateExercise() {
+            const tableBody = document.querySelector("#verbs-table tbody");
+            const message = document.getElementById("message");
+            tableBody.innerHTML = ""; // Limpiar tabla previa
+            message.innerText = ""; // Limpiar mensaje previo
+
+            // Crear una copia desordenada y seleccionar 15 verbos
+            const shuffledVerbs = [...verbs];
+            shuffleArray(shuffledVerbs);
+            const selectedVerbs = shuffledVerbs.slice(0, 15);
+
+            // Generar la tabla
+            selectedVerbs.forEach(verb => {
+                const row = document.createElement("tr");
+                const keys = ["infinitive", "past", "participle", "translation"];
+                const filledKey = keys[Math.floor(Math.random() * keys.length)]; // Selecciona una columna para rellenar automáticamente
+
+                keys.forEach(key => {
+                    const cell = document.createElement("td");
+                    if (key === filledKey) {
+                        cell.textContent = verb[key]; // Rellena una columna automáticamente
+                    } else {
+                        // Deja las otras columnas vacías para completar
+                        cell.innerHTML = `
+                            <input type="text" 
+                                   data-answer="${verb[key]}" 
+                                   class="missing" 
+                                   onfocus="this.style.backgroundColor=''" 
+                                   data-attempts="0">`;
+                    }
+                    row.appendChild(cell);
+                });
+                tableBody.appendChild(row);
+            });
+        }
+
+        function checkAnswers() {
+            const inputs = document.querySelectorAll("input.missing");
+            let allCorrect = true; // Para saber si todas las respuestas son correctas
+            let hasErrors = false; // Para verificar si hay errores
+
+            inputs.forEach(input => {
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswer = input.getAttribute("data-answer").toLowerCase();
+                let attempts = parseInt(input.getAttribute("data-attempts"));
+
+                if (userAnswer === correctAnswer) {
+                    input.classList.add("correct");
+                    input.classList.remove("incorrect");
+                    input.style.backgroundColor = "#d4edda"; // Verde
+                    input.disabled = true; // Bloquea input si es correcto
+                } else {
+                    hasErrors = true;
+                    attempts++;
+                    input.setAttribute("data-attempts", attempts);
+
+                    if (attempts === 2) {
+                        input.classList.add("incorrect");
+                        input.value = correctAnswer; // Muestra la respuesta correcta
+                        input.disabled = true; // Bloquea el input
+                        input.style.backgroundColor = "#f8d7da"; // Rojo
+                    } else {
+                        input.style.backgroundColor = "#f8d7da"; // Rojo para el primer fallo
+                        input.classList.add("incorrect");
+                        allCorrect = false;
+                    }
+                }
+            });
+
+            const message = document.getElementById("message");
+            if (!hasErrors && allCorrect) {
+                message.innerText = "¡Todas las respuestas son correctas! 🎉";
+                message.style.color = "green";
+            } else if (hasErrors) {
+                message.innerText = "Inténtalo de nuevo con las respuestas incorrectas.";
+                message.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
